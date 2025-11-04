@@ -34,6 +34,12 @@ const partners = [
 ];
 const allPartners = [...partners, ...partners];
 
+const marqueeWords = [
+  'Innovation', 'Intelligence', 'Creativity', 'Automation', 'Technology',
+  'Future', 'Learning', 'Collaboration', 'Discovery', 'Evolution'
+];
+const allMarqueeWords = [...marqueeWords, ...marqueeWords];
+
 const Parallax: React.FC<{ children: React.ReactNode; speed: number; className?: string }> = ({ children, speed, className }) => {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -224,6 +230,26 @@ export const HomePage: React.FC = () => {
           </Parallax>
         </AnimatedSection>
 
+        {/* Marquee Section */}
+        <div className="py-12 bg-gray-50 dark:bg-gray-800/50 my-20 md:my-32">
+            <div className="relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
+                <motion.div
+                    className="flex items-center whitespace-nowrap"
+                    initial={{ x: '0%' }}
+                    animate={{ x: '-50%' }}
+                    transition={{ ease: 'linear', duration: 40, repeat: Infinity }}
+                >
+                    {allMarqueeWords.map((word, index) => (
+                        <div key={index} className="flex items-center">
+                            <span className="mx-8 font-space-grotesk text-4xl md:text-5xl font-bold tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-br from-hcl-blue via-tech-purple to-hcl-teal">
+                                {word}
+                            </span>
+                            <span className="text-4xl md:text-5xl text-gray-300 dark:text-gray-600">•</span>
+                        </div>
+                    ))}
+                </motion.div>
+            </div>
+        </div>
 
         {/* What We Do Section */}
         <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8">
