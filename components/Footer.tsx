@@ -54,7 +54,7 @@ export const Footer: React.FC = () => {
                   <h4 className="font-space-grotesk font-bold text-lg mb-4">Get Involved</h4>
                   <ul className="space-y-2">
                       <li><Link to="/join" className="text-gray-500 dark:text-gray-400 hover:text-hcl-blue">Join the Club</Link></li>
-                      <li><Link to="/contact" className="text-gray-500 dark:text-gray-400 hover:text-hcl-blue">Partner With Us</Link></li>
+                      <li><Link to="/partner" className="text-gray-500 dark:text-gray-400 hover:text-hcl-blue">Partner With Us</Link></li>
                   </ul>
               </div>
                <div>
