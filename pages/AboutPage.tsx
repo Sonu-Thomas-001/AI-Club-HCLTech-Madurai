@@ -2,7 +2,8 @@ import React from 'react';
 import { PageHeader } from '../components/PageHeader';
 import { Bot, Python, Tensorflow, Pytorch, Firebase, OpenAI, HuggingFace, Building, Target, Eye, Lightbulb, Users, BrainCircuit, Shield } from '../components/Icons';
 import { Card } from '../components/Card';
-import { motion } from 'framer-motion';
+// FIX: Import Variants type from framer-motion to resolve type error.
+import { motion, Variants } from 'framer-motion';
 
 const timelineEvents = [
   { year: '2023', title: 'Club Inception', description: 'A small group of AI enthusiasts at HCLTech Madurai founded the club to create a space for innovation.' },
@@ -101,7 +102,8 @@ const TechCard: React.FC<{ tech: typeof techStack[0] }> = ({ tech }) => {
     );
 };
 
-const containerVariants = {
+// FIX: Explicitly type variants with the Variants type from framer-motion.
+const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
         opacity: 1,
@@ -111,7 +113,8 @@ const containerVariants = {
     }
 };
 
-const itemVariants = {
+// FIX: Explicitly type variants with the Variants type from framer-motion.
+const itemVariants: Variants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 120 } }
 };

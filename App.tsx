@@ -15,6 +15,7 @@ import { NewsPage } from './pages/NewsPage';
 import { FAQPage } from './pages/FAQPage';
 import { CommunityPage } from './pages/CommunityPage';
 import { PartnerPage } from './pages/PartnerPage';
+import { LeaderboardPage } from './pages/LeaderboardPage';
 import { BackToTopButton } from './components/BackToTopButton';
 import { ChatbotIcon } from './components/ChatbotIcon';
 import { AIAssistant } from './components/AIAssistant';
@@ -36,6 +37,7 @@ const routes: { [key: string]: React.ComponentType } = {
   '/news': NewsPage,
   '/faq': FAQPage,
   '/partner': PartnerPage,
+  '/leaderboard': LeaderboardPage,
 };
 
 const App: React.FC = () => {

@@ -46,6 +46,7 @@ export const Header: React.FC = () => {
         { name: 'Gallery', path: '/gallery' },
         { name: 'Community', path: '/community' },
         { name: 'News', path: '/news' },
+        { name: 'Leaderboard', path: '/leaderboard' },
         { name: 'Partner With Us', path: '/partner' },
       ]
     },

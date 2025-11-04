@@ -16,6 +16,7 @@ export const Footer: React.FC = () => {
     { name: 'Events', path: '/events' },
     { name: 'Learn', path: '/learn' },
     { name: 'Community', path: '/community' },
+    { name: 'Leaderboard', path: '/leaderboard' },
   ];
 
   const supportLinks = [
