@@ -7,6 +7,7 @@ import { Bot, BrainCircuit, Code, Users, Award, Calendar, Lightbulb, ChartBar, R
 import { CountUpStat } from './CountUpStat';
 import { TeamMemberCard } from './TeamMemberCard';
 import { ScrollingTestimonials } from './ScrollingTestimonials';
+import { motion } from 'framer-motion';
 
 const teamMembers = [
     { name: 'Aravind Kumar', role: 'Club Lead', imageUrl: 'https://placehold.co/128x128/e0e0e0/333333?text=AK', linkedinUrl: '#' },
@@ -22,6 +23,16 @@ const focusAreas = [
     { name: 'Cloud Computing', icon: <Cloud className="w-full h-full" />, description: 'Leveraging scalable cloud platforms for deploying and managing AI-powered applications.' },
     { name: 'Automation', icon: <Settings className="w-full h-full" />, description: 'Developing solutions to automate complex tasks and streamline business processes.' },
 ];
+
+const partners = [
+    { name: 'Google', logoUrl: 'https://placehold.co/200x100/fafafa/333333?text=Google', websiteUrl: '#' },
+    { name: 'NVIDIA', logoUrl: 'https://placehold.co/200x100/fafafa/333333?text=NVIDIA', websiteUrl: '#' },
+    { name: 'Microsoft', logoUrl: 'https://placehold.co/200x100/fafafa/333333?text=Microsoft', websiteUrl: '#' },
+    { name: 'AWS', logoUrl: 'https://placehold.co/200x100/fafafa/333333?text=AWS', websiteUrl: '#' },
+    { name: 'Hugging Face', logoUrl: 'https://placehold.co/200x100/fafafa/333333?text=Hugging+Face', websiteUrl: '#' },
+    { name: 'OpenAI', logoUrl: 'https://placehold.co/200x100/fafafa/333333?text=OpenAI', websiteUrl: '#' },
+];
+const allPartners = [...partners, ...partners];
 
 const FocusAreaCard: React.FC<{ area: typeof focusAreas[0] }> = ({ area }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -241,6 +252,41 @@ export const HomePage: React.FC = () => {
                     <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white">Ready to Shape the Future?</h2>
                     <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mt-4 mb-8">Join a community of innovators and start your journey in AI today. Whether you're a beginner or an expert, there's a place for you here.</p>
                     <Link to="/join"><Button>Become a Member</Button></Link>
+                </div>
+            </div>
+        </AnimatedSection>
+        
+        {/* Our Partners Section */}
+        <AnimatedSection>
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white mb-4">Our Esteemed Partners</h2>
+                <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mb-12">
+                    We are proud to collaborate with industry leaders to foster innovation and provide opportunities for our members.
+                </p>
+                <div className="w-full inline-block overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
+                    <motion.div
+                        className="flex items-center"
+                        initial={{ x: '0%' }}
+                        animate={{ x: '-50%' }}
+                        transition={{ ease: 'linear', duration: 40, repeat: Infinity }}
+                    >
+                        {allPartners.map((partner, index) => (
+                            <a
+                                key={index}
+                                href={partner.websiteUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-shrink-0 mx-10"
+                                title={partner.name}
+                            >
+                                <img
+                                    src={partner.logoUrl}
+                                    alt={`${partner.name} logo`}
+                                    className="h-16 w-auto object-contain filter grayscale hover:grayscale-0 opacity-60 hover:opacity-100 dark:opacity-40 dark:hover:opacity-100 transition-all duration-300 ease-in-out"
+                                />
+                            </a>
+                        ))}
+                    </motion.div>
                 </div>
             </div>
         </AnimatedSection>
