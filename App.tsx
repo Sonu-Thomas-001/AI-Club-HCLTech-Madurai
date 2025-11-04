@@ -13,6 +13,7 @@ import { GalleryPage } from './pages/GalleryPage';
 import { PortalPage } from './pages/PortalPage';
 import { NewsPage } from './pages/NewsPage';
 import { FAQPage } from './pages/FAQPage';
+import { CommunityPage } from './pages/CommunityPage';
 import { BackToTopButton } from './components/BackToTopButton';
 import { ChatbotIcon } from './components/ChatbotIcon';
 import { AIAssistant } from './components/AIAssistant';
@@ -27,6 +28,7 @@ const routes: { [key: string]: React.ComponentType } = {
   '/learn': LearnPage,
   '/members': MembersPage,
   '/gallery': GalleryPage,
+  '/community': CommunityPage,
   '/contact': ContactPage,
   '/portal': PortalPage,
   '/join': JoinUsPage,

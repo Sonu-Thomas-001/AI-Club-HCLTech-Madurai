@@ -29,7 +29,7 @@ const Marquee: React.FC<{ children: React.ReactNode, duration?: number }> = ({ c
     return (
         <motion.div
             initial={{ x: '0%' }}
-            animate={{ x: '-100%' }}
+            animate={{ x: '-50%' }}
             transition={{ duration, repeat: Infinity, ease: 'linear' }}
             className="flex"
         >
