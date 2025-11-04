@@ -7,7 +7,7 @@ import { Bot, BrainCircuit, Code, Users, Award, Calendar, Lightbulb, ChartBar, R
 import { CountUpStat } from './CountUpStat';
 import { TeamMemberCard } from './TeamMemberCard';
 import { ScrollingTestimonials } from './ScrollingTestimonials';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 const teamMembers = [
     { name: 'Aravind Kumar', role: 'Club Lead', imageUrl: 'https://placehold.co/128x128/e0e0e0/333333?text=AK', linkedinUrl: '#' },
@@ -33,6 +33,21 @@ const partners = [
     { name: 'OpenAI', logoUrl: 'https://placehold.co/200x100/fafafa/333333?text=OpenAI', websiteUrl: '#' },
 ];
 const allPartners = [...partners, ...partners];
+
+const Parallax: React.FC<{ children: React.ReactNode; speed: number; className?: string }> = ({ children, speed, className }) => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const y = useTransform(scrollYProgress, [0, 1], [`${speed * -80}px`, `${speed * 80}px`]);
+
+  return (
+    <motion.div ref={ref} style={{ y }} className={className}>
+      {children}
+    </motion.div>
+  );
+};
 
 const FocusAreaCard: React.FC<{ area: typeof focusAreas[0] }> = ({ area }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -122,36 +137,45 @@ export const HomePage: React.FC = () => {
             <div className="absolute inset-0 bg-grid-gray-200/[0.2] dark:bg-grid-gray-700/[0.2] [mask-image:linear-gradient(to_bottom,white,transparent,white)]"></div>
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
                 <AnimatedSection>
-                    <Bot className="w-20 h-20 text-hcl-blue mx-auto mb-6 animate-float" />
-                    <h1 className="font-space-grotesk text-4xl md:text-7xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-hcl-blue via-tech-purple to-hcl-teal pb-4">
-                        Supercharging Progress Through AI
-                    </h1>
-                    <p className="text-gray-600 dark:text-gray-300 text-lg md:text-xl max-w-3xl mx-auto mt-4 leading-relaxed">
-                        Welcome to the AI Club at HCLTech Madurai—a community of innovators, learners, and builders passionate about shaping the future with artificial intelligence.
-                    </p>
-                    <div className="mt-10 flex justify-center items-center gap-4">
-                        <Link to="/join"><Button>Join the Club</Button></Link>
-                        <Link to="/projects"><Button variant="outline">View Projects</Button></Link>
-                    </div>
+                    <Parallax speed={-0.3}>
+                      <Bot className="w-20 h-20 text-hcl-blue mx-auto mb-6 animate-float" />
+                    </Parallax>
+                    <Parallax speed={-0.15}>
+                      <h1 className="font-space-grotesk text-4xl md:text-7xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-hcl-blue via-tech-purple to-hcl-teal pb-4">
+                          Supercharging Progress Through AI
+                      </h1>
+                    </Parallax>
+                    <Parallax speed={0.05}>
+                      <p className="text-gray-600 dark:text-gray-300 text-lg md:text-xl max-w-3xl mx-auto mt-4 leading-relaxed">
+                          Welcome to the AI Club at HCLTech Madurai—a community of innovators, learners, and builders passionate about shaping the future with artificial intelligence.
+                      </p>
+                    </Parallax>
+                    <Parallax speed={0.1}>
+                      <div className="mt-10 flex justify-center items-center gap-4">
+                          <Link to="/join"><Button>Join the Club</Button></Link>
+                          <Link to="/projects"><Button variant="outline">View Projects</Button></Link>
+                      </div>
+                    </Parallax>
                 </AnimatedSection>
             </div>
         </div>
 
         {/* Stats Section */}
         <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <Parallax speed={0.1}>
             <div className="glass-card grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 p-6 md:p-8 rounded-2xl max-w-4xl mx-auto divide-x divide-gray-200/50 dark:divide-gray-700/50">
                 <CountUpStat value={100} label="Members" />
                 <CountUpStat value={15} label="Projects" />
                 <CountUpStat value={25} label="Workshops" />
                 <CountUpStat value={5} label="Hackathons" />
             </div>
+          </Parallax>
         </AnimatedSection>
         
         {/* About the Club Section */}
         <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
-                {/* Left column (text) */}
-                <div className="text-center md:text-left">
+                <Parallax speed={0.15} className="text-center md:text-left">
                     <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white mb-4">
                         About the Club
                     </h2>
@@ -164,130 +188,157 @@ export const HomePage: React.FC = () => {
                     <Link to="/about">
                         <Button variant="outline">Learn More About Us</Button>
                     </Link>
-                </div>
-                {/* Right column (visuals) */}
-                <div className="grid grid-cols-2 grid-rows-2 gap-4 h-80 lg:h-96">
-                    <div className="col-span-1 row-span-2 overflow-hidden rounded-2xl shadow-lg group">
-                        <img src="https://placehold.co/400x600/008080/FFFFFF?text=Workshop" alt="AI workshop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
-                    </div>
-                    <div className="col-span-1 row-span-1 overflow-hidden rounded-2xl shadow-lg group">
-                        <img src="https://placehold.co/400x300/29ABE2/FFFFFF?text=Teamwork" alt="Team collaboration" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
-                    </div>
-                    <div className="col-span-1 row-span-1 overflow-hidden rounded-2xl shadow-lg group">
-                        <img src="https://placehold.co/400x300/5F1EBE/FFFFFF?text=Innovation" alt="Innovation idea" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
-                    </div>
-                </div>
+                </Parallax>
+                <Parallax speed={-0.1}>
+                  <div className="grid grid-cols-2 grid-rows-2 gap-4 h-80 lg:h-96">
+                      <div className="col-span-1 row-span-2 overflow-hidden rounded-2xl shadow-lg group">
+                          <img src="https://placehold.co/400x600/008080/FFFFFF?text=Workshop" alt="AI workshop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+                      </div>
+                      <div className="col-span-1 row-span-1 overflow-hidden rounded-2xl shadow-lg group">
+                          <img src="https://placehold.co/400x300/29ABE2/FFFFFF?text=Teamwork" alt="Team collaboration" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+                      </div>
+                      <div className="col-span-1 row-span-1 overflow-hidden rounded-2xl shadow-lg group">
+                          <img src="https://placehold.co/400x300/5F1EBE/FFFFFF?text=Innovation" alt="Innovation idea" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+                      </div>
+                  </div>
+                </Parallax>
             </div>
         </AnimatedSection>
 
         {/* Our Focus Areas Section */}
         <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <Parallax speed={0.1}>
             <div className="text-center mb-12">
                 <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white">Our Focus Areas</h2>
                 <p className="font-space-grotesk text-xl text-hcl-teal mt-2">
                     “Innovate. Create. Collaborate.”
                 </p>
             </div>
+          </Parallax>
+          <Parallax speed={-0.05}>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
                 {focusAreas.map(area => (
                     <FocusAreaCard key={area.name} area={area} />
                 ))}
             </div>
+          </Parallax>
         </AnimatedSection>
 
 
         {/* What We Do Section */}
         <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <Parallax speed={0.1}>
             <div className="text-center mb-12">
                 <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white">What We Do</h2>
                 <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mt-4">We focus on three core pillars to foster AI innovation and growth.</p>
             </div>
+          </Parallax>
+          <Parallax speed={-0.05}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <Card icon={<Lightbulb className="w-10 h-10 text-hcl-blue"/>} title="Learn & Upskill" description="We organize workshops, tech talks, and study groups on cutting-edge AI topics, from deep learning to generative AI." />
                 <Card icon={<Code className="w-10 h-10 text-hcl-blue"/>} title="Build & Innovate" description="Members collaborate on real-world projects, building prototypes that solve business challenges and push technological boundaries." />
                 <Card icon={<Users className="w-10 h-10 text-hcl-blue"/>} title="Connect & Collaborate" description="We provide a platform for networking with peers, mentors, and experts, fostering a vibrant and supportive AI community." />
             </div>
+          </Parallax>
         </AnimatedSection>
 
         {/* Featured Projects Section */}
         <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-                <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white">Featured Projects</h2>
-                <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mt-4">A glimpse into the innovative solutions being built by our members.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <Card icon={<BrainCircuit className="w-10 h-10 text-hcl-blue"/>} title="NeuroLens" description="An AI-powered document summarizer that converts long reports into precise insights." />
-                <Card icon={<Bot className="w-10 h-10 text-hcl-blue"/>} title="SmartBot" description="A custom conversational AI assistant that integrates with internal tools to automate queries." />
-                <Card icon={<Award className="w-10 h-10 text-hcl-blue"/>} title="Visionary" description="A computer vision prototype for quality inspection, detecting surface defects in manufacturing." />
-            </div>
-            <div className="text-center mt-12">
-                <Link to="/projects"><Button>Explore All Projects</Button></Link>
-            </div>
+            <Parallax speed={0.1}>
+              <div className="text-center mb-12">
+                  <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white">Featured Projects</h2>
+                  <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mt-4">A glimpse into the innovative solutions being built by our members.</p>
+              </div>
+            </Parallax>
+            <Parallax speed={-0.05}>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <Card icon={<BrainCircuit className="w-10 h-10 text-hcl-blue"/>} title="NeuroLens" description="An AI-powered document summarizer that converts long reports into precise insights." />
+                  <Card icon={<Bot className="w-10 h-10 text-hcl-blue"/>} title="SmartBot" description="A custom conversational AI assistant that integrates with internal tools to automate queries." />
+                  <Card icon={<Award className="w-10 h-10 text-hcl-blue"/>} title="Visionary" description="A computer vision prototype for quality inspection, detecting surface defects in manufacturing." />
+              </div>
+            </Parallax>
+            <Parallax speed={0.1}>
+              <div className="text-center mt-12">
+                  <Link to="/projects"><Button>Explore All Projects</Button></Link>
+              </div>
+            </Parallax>
         </AnimatedSection>
 
         {/* Meet the Team Section */}
         <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-                <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white">Meet the Leadership</h2>
-                 <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mt-4">The core team driving the club's vision and activities.</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {teamMembers.map(member => <TeamMemberCard key={member.name} member={member} />)}
-            </div>
+            <Parallax speed={0.1}>
+              <div className="text-center mb-12">
+                  <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white">Meet the Leadership</h2>
+                   <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mt-4">The core team driving the club's vision and activities.</p>
+              </div>
+            </Parallax>
+            <Parallax speed={-0.05}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {teamMembers.map(member => <TeamMemberCard key={member.name} member={member} />)}
+              </div>
+            </Parallax>
         </AnimatedSection>
 
         {/* Testimonials */}
         <AnimatedSection>
-            <div className="text-center mb-12">
-                <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white">What Our Members Say</h2>
-            </div>
+            <Parallax speed={0.1}>
+              <div className="text-center mb-12">
+                  <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white">What Our Members Say</h2>
+              </div>
+            </Parallax>
             <ScrollingTestimonials />
         </AnimatedSection>
 
         {/* Join Us CTA */}
         <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="relative glass-card p-10 md:p-16 rounded-3xl overflow-hidden text-center">
-                <div className="absolute inset-0 bg-gradient-to-br from-hcl-blue/10 to-hcl-teal/10 dark:from-hcl-blue/20 dark:to-hcl-teal/20"></div>
-                <div className="relative z-10">
-                    <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white">Ready to Shape the Future?</h2>
-                    <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mt-4 mb-8">Join a community of innovators and start your journey in AI today. Whether you're a beginner or an expert, there's a place for you here.</p>
-                    <Link to="/join"><Button>Become a Member</Button></Link>
-                </div>
-            </div>
+            <Parallax speed={0.1}>
+              <div className="relative glass-card p-10 md:p-16 rounded-3xl overflow-hidden text-center">
+                  <div className="absolute inset-0 bg-gradient-to-br from-hcl-blue/10 to-hcl-teal/10 dark:from-hcl-blue/20 dark:to-hcl-teal/20"></div>
+                  <div className="relative z-10">
+                      <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white">Ready to Shape the Future?</h2>
+                      <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mt-4 mb-8">Join a community of innovators and start your journey in AI today. Whether you're a beginner or an expert, there's a place for you here.</p>
+                      <Link to="/join"><Button>Become a Member</Button></Link>
+                  </div>
+              </div>
+            </Parallax>
         </AnimatedSection>
         
         {/* Our Partners Section */}
         <AnimatedSection>
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white mb-4">Our Esteemed Partners</h2>
-                <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mb-12">
-                    We are proud to collaborate with industry leaders to foster innovation and provide opportunities for our members.
-                </p>
-                <div className="w-full inline-block overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
-                    <motion.div
-                        className="flex items-center"
-                        initial={{ x: '0%' }}
-                        animate={{ x: '-50%' }}
-                        transition={{ ease: 'linear', duration: 40, repeat: Infinity }}
-                    >
-                        {allPartners.map((partner, index) => (
-                            <a
-                                key={index}
-                                href={partner.websiteUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex-shrink-0 mx-10"
-                                title={partner.name}
-                            >
-                                <img
-                                    src={partner.logoUrl}
-                                    alt={`${partner.name} logo`}
-                                    className="h-16 w-auto object-contain filter grayscale hover:grayscale-0 opacity-60 hover:opacity-100 dark:opacity-40 dark:hover:opacity-100 transition-all duration-300 ease-in-out"
-                                />
-                            </a>
-                        ))}
-                    </motion.div>
-                </div>
+                <Parallax speed={0.1}>
+                  <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white mb-4">Our Esteemed Partners</h2>
+                  <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mb-12">
+                      We are proud to collaborate with industry leaders to foster innovation and provide opportunities for our members.
+                  </p>
+                </Parallax>
+                <Parallax speed={-0.1}>
+                  <div className="w-full inline-block overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
+                      <motion.div
+                          className="flex items-center"
+                          initial={{ x: '0%' }}
+                          animate={{ x: '-50%' }}
+                          transition={{ ease: 'linear', duration: 40, repeat: Infinity }}
+                      >
+                          {allPartners.map((partner, index) => (
+                              <a
+                                  key={index}
+                                  href={partner.websiteUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex-shrink-0 mx-10"
+                                  title={partner.name}
+                              >
+                                  <img
+                                      src={partner.logoUrl}
+                                      alt={`${partner.name} logo`}
+                                      className="h-16 w-auto object-contain filter grayscale hover:grayscale-0 opacity-60 hover:opacity-100 dark:opacity-40 dark:hover:opacity-100 transition-all duration-300 ease-in-out"
+                                  />
+                              </a>
+                          ))}
+                      </motion.div>
+                  </div>
+                </Parallax>
             </div>
         </AnimatedSection>
     </div>
