@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Bot, Send, X } from './Icons';
-import type { Chat } from '@google/genai';
+
+// Minimal local type for the chat instance returned by Google AI SDK
+type Chat = {
+  sendMessage: (message: string) => Promise<{ response: { text: () => string } }>;
+} | null;
 
 interface Message {
   role: 'user' | 'model';
@@ -25,26 +29,67 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   // FIX: Use a state to hold the chat instance to ensure component re-renders upon initialization.
-  const [chat, setChat] = useState<Chat | null>(null);
+  const [chat, setChat] = useState<Chat>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     const initializeAI = async () => {
       try {
-        const API_KEY = process.env.API_KEY;
+        const API_KEY =
+          (process.env.API_KEY as unknown as string | undefined) ||
+          (process.env.GEMINI_API_KEY as unknown as string | undefined) ||
+          // Vite-style envs (prefer VITE_ prefix if user adds it later)
+          ((import.meta as any).env?.VITE_GEMINI_API_KEY as string | undefined) ||
+          ((import.meta as any).env?.GEMINI_API_KEY as string | undefined) ||
+          // Last-resort: allow storing key in localStorage for quick testing
+          (typeof window !== 'undefined' ? window.localStorage.getItem('GEMINI_API_KEY') ?? undefined : undefined);
+
         if (!API_KEY) {
-          throw new Error("API key is not available.");
+          setError('Missing API key. Create a .env with GEMINI_API_KEY=... and restart, or set it in localStorage as GEMINI_API_KEY.');
+          return;
         }
-        const { GoogleGenAI } = await import('@google/genai');
-        const ai = new GoogleGenAI({ apiKey: API_KEY });
-        // FIX: Initialize a stateful chat session for a better conversational experience.
-        const newChat = ai.chats.create({
-            model: 'gemini-2.5-flash',
-            config: { systemInstruction },
+
+        // Try multiple CDNs for the browser ESM build of Google's Generative AI SDK
+        const CDN_URLS = [
+          'https://cdn.jsdelivr.net/npm/@google/generative-ai/+esm',
+          'https://esm.run/@google/generative-ai',
+          'https://unpkg.com/@google/generative-ai/dist/index.js'
+        ];
+
+        let genaiMod: any = null;
+        let lastErr: any = null;
+        for (const url of CDN_URLS) {
+          try {
+            genaiMod = await import(/* @vite-ignore */ url);
+            if (genaiMod) break;
+          } catch (err) {
+            lastErr = err;
+          }
+        }
+        if (!genaiMod) {
+          throw new Error(`Unable to load Google AI SDK from CDNs. Last error: ${lastErr?.message || lastErr}`);
+        }
+
+        const GoogleClass = genaiMod.GoogleGenerativeAI || genaiMod.GoogleGenAI;
+        if (!GoogleClass) {
+          throw new Error('Failed to load Google AI SDK');
+        }
+        // Support both constructor styles: new GoogleGenerativeAI(apiKey) and new GoogleGenAI({ apiKey })
+        const genAI = (GoogleClass.length === 1)
+          ? new GoogleClass(API_KEY)
+          : new GoogleClass({ apiKey: API_KEY });
+
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+        const newChat = model.startChat({
+          systemInstruction: {
+            role: 'system',
+            parts: [{ text: systemInstruction }],
+          },
         });
-        setChat(newChat);
+        setChat(newChat as Chat);
       } catch (e: any) {
-        setError("Failed to initialize the AI Assistant. Please try again later.");
+        const msg = (e && (e.message || e.toString())) || 'Unknown error';
+        setError(`Failed to initialize the AI Assistant: ${msg}`);
         console.error(e);
       }
     };
@@ -68,16 +113,22 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ onClose }) => {
     setError(null);
     
     try {
-       // FIX: Use the more efficient chat.sendMessage method for conversations.
-      const response = await chat.sendMessage({ message: currentInput });
-      const modelMessage: Message = { role: 'model', content: response.text };
+      // FIX: Use the more efficient chat.sendMessage method for conversations.
+      const result = await chat.sendMessage(currentInput);
+      const text = result?.response?.text ? result.response.text() : '';
+      const modelMessage: Message = { role: 'model', content: text || 'No response received.' };
       setMessages((prev) => [...prev, modelMessage]);
-    } catch (e: any)
-    {
-      const errorMessage = "Sorry, I encountered an error. Please try again.";
+    } catch (e: any) {
+      const errMsg =
+        e?.response?.error?.message ||
+        e?.response?.candidates?.[0]?.content ||
+        e?.message ||
+        e?.toString() ||
+        'Unknown error';
+      const errorMessage = `Sorry, I encountered an error: ${errMsg}`;
       setError(errorMessage);
       setMessages((prev) => [...prev, { role: 'model', content: errorMessage }]);
-      console.error(e);
+      console.error('AI Assistant sendMessage error', e);
     } finally {
       setIsLoading(false);
     }
