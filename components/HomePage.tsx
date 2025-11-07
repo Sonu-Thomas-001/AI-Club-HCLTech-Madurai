@@ -237,7 +237,7 @@ export const HomePage: React.FC = () => {
                     className="flex items-center whitespace-nowrap"
                     initial={{ x: '0%' }}
                     animate={{ x: '-50%' }}
-                    transition={{ ease: 'linear', duration: 40, repeat: Infinity }}
+                    transition={{ ease: 'linear', duration: 20, repeat: Infinity }}
                 >
                     {allMarqueeWords.map((word, index) => (
                         <div key={index} className="flex items-center">
@@ -344,7 +344,7 @@ export const HomePage: React.FC = () => {
                           className="flex items-center"
                           initial={{ x: '0%' }}
                           animate={{ x: '-50%' }}
-                          transition={{ ease: 'linear', duration: 40, repeat: Infinity }}
+                          transition={{ ease: 'linear', duration: 20, repeat: Infinity }}
                       >
                           {allPartners.map((partner, index) => (
                               <a
