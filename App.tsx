@@ -22,6 +22,7 @@ import { ChatbotIcon } from './components/ChatbotIcon';
 import { AIAssistant } from './components/AIAssistant';
 import { CustomCursor } from './components/CustomCursor';
 import { ScrollProgress } from './components/ScrollProgress';
+import { Preloader } from './components/Preloader';
 import { AnimatePresence } from 'framer-motion';
 import { ThemeContext } from './contexts/ThemeContext';
 
@@ -47,6 +48,7 @@ const App: React.FC = () => {
   const [currentPath, setCurrentPath] = useState(window.location.hash.slice(1) || '/');
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -85,23 +87,29 @@ const App: React.FC = () => {
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col transition-colors duration-500 relative">
-        {/* Global Noise Texture */}
-        <div className="bg-noise"></div>
-        
-        <CustomCursor />
-        <ScrollProgress />
-        <Header />
-        <main className="flex-grow relative z-10">
-          <CurrentPage />
-        </main>
-        <Footer />
-        <BackToTopButton />
-        <ChatbotIcon onClick={toggleAssistant} />
-        <AnimatePresence>
-          {isAssistantOpen && <AIAssistant onClose={toggleAssistant} />}
-        </AnimatePresence>
-      </div>
+       <AnimatePresence mode='wait'>
+        {loading ? (
+          <Preloader key="preloader" onComplete={() => setLoading(false)} />
+        ) : (
+          <div key="app" className="min-h-screen bg-white dark:bg-gray-900 flex flex-col transition-colors duration-500 relative">
+            {/* Global Noise Texture */}
+            <div className="bg-noise"></div>
+            
+            <CustomCursor />
+            <ScrollProgress />
+            <Header />
+            <main className="flex-grow relative z-10">
+              <CurrentPage />
+            </main>
+            <Footer />
+            <BackToTopButton />
+            <ChatbotIcon onClick={toggleAssistant} />
+            <AnimatePresence>
+              {isAssistantOpen && <AIAssistant onClose={toggleAssistant} />}
+            </AnimatePresence>
+          </div>
+        )}
+      </AnimatePresence>
     </ThemeContext.Provider>
   );
 };
