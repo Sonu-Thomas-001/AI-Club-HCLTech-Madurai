@@ -104,7 +104,7 @@ export const HomePage: React.FC = () => {
   return (
     <div className="overflow-hidden">
         {/* Immersive Hero Section */}
-        <div className="relative min-h-screen flex items-center justify-center pt-20 pb-20 overflow-hidden">
+        <div className="relative min-h-screen flex items-center justify-center pt-20 pb-40 overflow-hidden">
              {/* Dynamic Backgrounds */}
             <div className="absolute inset-0 bg-gradient-to-b from-gray-50 via-white to-blue-50 dark:from-black dark:via-[#0a0a0a] dark:to-[#111827] z-0"></div>
             <div className="absolute inset-0 bg-grid-pattern bg-[length:30px_30px] opacity-50 z-0"></div>
@@ -151,7 +151,7 @@ export const HomePage: React.FC = () => {
         </div>
 
         {/* Floating Stats HUD */}
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-20">
            <Parallax speed={0.05}>
               <div className="glass-panel rounded-3xl p-8 border-t border-white/50 dark:border-white/10 shadow-2xl">
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-gray-200/50 dark:divide-gray-800/50">
