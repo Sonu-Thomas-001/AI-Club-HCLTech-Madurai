@@ -41,7 +41,8 @@ const marqueeWords = [
   'Innovation', 'Intelligence', 'Creativity', 'Automation', 'Technology',
   'Future', 'Learning', 'Collaboration', 'Discovery', 'Evolution'
 ];
-const allMarqueeWords = [...marqueeWords, ...marqueeWords];
+// Quadruple the array to ensure smooth infinite scrolling on wide screens
+const allMarqueeWords = [...marqueeWords, ...marqueeWords, ...marqueeWords, ...marqueeWords];
 
 const Parallax: React.FC<{ children: React.ReactNode; speed: number; className?: string }> = ({ children, speed, className }) => {
   const ref = useRef(null);
@@ -188,25 +189,42 @@ export const HomePage: React.FC = () => {
              </div>
         </div>
 
-        {/* Marquee Section */}
-        <div className="py-16 bg-gray-100 dark:bg-black border-y border-gray-200 dark:border-gray-800">
-            <div className="relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
+        {/* Modern Marquee Section */}
+        <section className="relative py-12 overflow-hidden z-20 bg-gray-50 dark:bg-[#050505]">
+            {/* Background Strip with Blur */}
+            <div className="absolute inset-0 bg-hcl-blue/5 dark:bg-hcl-blue/5 -skew-y-1 transform origin-left scale-110 blur-3xl pointer-events-none"></div>
+
+            {/* Glass Container */}
+            <div className="relative border-y border-gray-200/50 dark:border-white/5 bg-white/30 dark:bg-black/20 backdrop-blur-md">
+                {/* Fade Masks for Smooth Entry/Exit */}
+                <div className="absolute left-0 top-0 bottom-0 w-24 md:w-48 z-10 bg-gradient-to-r from-gray-50 dark:from-[#050505] to-transparent pointer-events-none"></div>
+                <div className="absolute right-0 top-0 bottom-0 w-24 md:w-48 z-10 bg-gradient-to-l from-gray-50 dark:from-[#050505] to-transparent pointer-events-none"></div>
+
                 <motion.div
-                    className="flex items-center whitespace-nowrap"
-                    initial={{ x: '0%' }}
-                    animate={{ x: '-50%' }}
-                    transition={{ ease: 'linear', duration: 30, repeat: Infinity }}
+                    className="flex items-center py-6 whitespace-nowrap"
+                    initial={{ x: 0 }}
+                    animate={{ x: "-25%" }} // Animate less distance because the list is quadrupled
+                    transition={{
+                        repeat: Infinity,
+                        ease: "linear",
+                        duration: 40, // Smooth, slow speed
+                    }}
                 >
                     {allMarqueeWords.map((word, index) => (
-                        <div key={index} className="flex items-center mx-8">
-                            <span className="font-space-grotesk text-6xl md:text-8xl font-bold uppercase text-transparent bg-clip-text bg-gradient-to-b from-gray-300 to-gray-100 dark:from-gray-800 dark:to-gray-900 hover:from-hcl-blue hover:to-hcl-teal transition-colors duration-500 cursor-default">
+                        <div key={index} className="flex items-center gap-8 mx-6 group cursor-default select-none">
+                             {/* Tech Separator */}
+                            <span className="text-hcl-blue/30 text-xl group-hover:text-hcl-blue group-hover:rotate-90 transition-all duration-500">
+                                ✦
+                            </span>
+                            {/* Text with refined styling */}
+                            <span className="font-space-grotesk font-bold text-3xl md:text-5xl uppercase tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-gray-400 to-gray-600 dark:from-gray-500 dark:to-gray-700 group-hover:from-hcl-blue group-hover:to-hcl-teal transition-all duration-500">
                                 {word}
                             </span>
                         </div>
                     ))}
                 </motion.div>
             </div>
-        </div>
+        </section>
 
         {/* What We Do Section (Classic Layout Refined) */}
         <div className="py-24 md:py-32 bg-gray-50 dark:bg-[#0f0f0f]">
