@@ -79,7 +79,7 @@ const BentoCard: React.FC<{ area: typeof focusAreas[0]; index: number }> = ({ ar
        <div className="relative z-10 h-full flex flex-col justify-between">
           {/* Icon Container */}
           <div className="w-14 h-14 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 flex items-center justify-center text-hcl-blue group-hover:scale-110 group-hover:bg-hcl-blue group-hover:text-white transition-all duration-500 shadow-sm">
-             {React.cloneElement(area.icon as React.ReactElement, { className: "w-7 h-7" })}
+             {React.cloneElement(area.icon as React.ReactElement<{ className?: string }>, { className: "w-7 h-7" })}
           </div>
           
           <div className="mt-8">
