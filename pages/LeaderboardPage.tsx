@@ -51,31 +51,44 @@ const MovementIcon: React.FC<{ type: string }> = ({ type }) => {
 export const LeaderboardPage: React.FC = () => {
   const [members, setMembers] = useState<MemberData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string>('');
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
         try {
-            const response = await fetch('/leaderboard.csv');
+            // Use no-cache to ensure we get the latest version of the CSV after deployment
+            const response = await fetch('/leaderboard.csv', { cache: 'no-cache' });
+            
+            if (!response.ok) {
+                throw new Error(`Failed to load data: ${response.status} ${response.statusText}`);
+            }
+
             const csvText = await response.text();
             
             Papa.parse(csvText, {
                 header: true,
                 skipEmptyLines: true,
                 complete: (results: { data: MemberData[] }) => {
-                    // Sort by Points descending just in case CSV isn't sorted
-                    const sortedData = results.data.sort((a, b) => parseInt(b.Points) - parseInt(a.Points));
+                    // Sort by Points descending
+                    const sortedData = results.data.sort((a, b) => {
+                        const pointsA = parseInt(a.Points) || 0;
+                        const pointsB = parseInt(b.Points) || 0;
+                        return pointsB - pointsA;
+                    });
                     setMembers(sortedData);
                     setLoading(false);
-                    setLastUpdated(new Date().toLocaleString()); // Ideally this comes from server metadata
+                    setLastUpdated(new Date().toLocaleString()); 
                 },
                 error: (err: any) => {
                     console.error("CSV Parse Error:", err);
+                    setError("Error parsing leaderboard data.");
                     setLoading(false);
                 }
             });
-        } catch (error) {
+        } catch (error: any) {
             console.error("Fetch Error:", error);
+            setError("Could not load leaderboard data. Please try again later.");
             setLoading(false);
         }
     };
@@ -114,16 +127,25 @@ export const LeaderboardPage: React.FC = () => {
                     <p className="text-gray-400 max-w-lg mx-auto">
                         Recognizing the visionaries and contributors shaping the future of AI.
                     </p>
-                    {!loading && (
+                    {!loading && !error && (
                         <p className="text-xs text-gray-600 mt-4 font-mono">Last Updated: {lastUpdated}</p>
                     )}
                 </div>
 
-                {loading ? (
+                {loading && (
                     <div className="flex justify-center py-20">
                         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-hcl-blue"></div>
                     </div>
-                ) : (
+                )}
+
+                {error && (
+                     <div className="text-center py-20 text-red-400 bg-red-900/20 rounded-xl border border-red-900/50 max-w-md mx-auto">
+                        <p className="font-bold mb-2">System Malfunction</p>
+                        <p>{error}</p>
+                    </div>
+                )}
+
+                {!loading && !error && (
                     <>
                         {/* 3D Holographic Podium */}
                         <div className="flex justify-center items-end gap-4 md:gap-8 mb-24 h-[400px]">
