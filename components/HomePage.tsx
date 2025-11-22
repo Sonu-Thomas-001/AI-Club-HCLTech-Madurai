@@ -1,12 +1,15 @@
+
 import React, { useRef, useState } from 'react';
 import { Button } from './Button';
 import { Card } from './Card';
 import { Link } from './Link';
 import { AnimatedSection } from './AnimatedSection';
-import { Bot, BrainCircuit, Code, Users, Award, Calendar, Lightbulb, ChartBar, Robot, Cloud, Settings } from './Icons';
+import { Bot, BrainCircuit, Code, Users, Award, Lightbulb, ChartBar, Robot, Cloud, Settings } from './Icons';
 import { CountUpStat } from './CountUpStat';
 import { TeamMemberCard } from './TeamMemberCard';
 import { ScrollingTestimonials } from './ScrollingTestimonials';
+import { HeroBackground } from './HeroBackground';
+import { Typewriter } from './Typewriter';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 const teamMembers = [
@@ -17,11 +20,11 @@ const teamMembers = [
 ];
 
 const focusAreas = [
-    { name: 'Artificial Intelligence', icon: <BrainCircuit className="w-full h-full" />, description: 'Exploring neural networks, deep learning, and generative models to build intelligent systems.' },
-    { name: 'Data Science', icon: <ChartBar className="w-full h-full" />, description: 'Turning raw data into actionable insights through statistical analysis and visualization.' },
-    { name: 'Robotics', icon: <Robot className="w-full h-full" />, description: 'Integrating AI with hardware to create autonomous systems and intelligent machines.' },
-    { name: 'Cloud Computing', icon: <Cloud className="w-full h-full" />, description: 'Leveraging scalable cloud platforms for deploying and managing AI-powered applications.' },
-    { name: 'Automation', icon: <Settings className="w-full h-full" />, description: 'Developing solutions to automate complex tasks and streamline business processes.' },
+    { name: 'Artificial Intelligence', icon: <BrainCircuit className="w-full h-full" />, description: 'Exploring neural networks, deep learning, and generative models to build intelligent systems.', span: 'md:col-span-2 md:row-span-2' },
+    { name: 'Data Science', icon: <ChartBar className="w-full h-full" />, description: 'Turning raw data into actionable insights through statistical analysis.', span: 'md:col-span-1 md:row-span-1' },
+    { name: 'Robotics', icon: <Robot className="w-full h-full" />, description: 'Integrating AI with hardware for autonomous systems.', span: 'md:col-span-1 md:row-span-2' },
+    { name: 'Cloud Computing', icon: <Cloud className="w-full h-full" />, description: 'Scalable platforms for deploying AI applications.', span: 'md:col-span-1 md:row-span-1' },
+    { name: 'Automation', icon: <Settings className="w-full h-full" />, description: 'Automating complex tasks to streamline business processes.', span: 'md:col-span-2 md:row-span-1' },
 ];
 
 const partners = [
@@ -55,291 +58,278 @@ const Parallax: React.FC<{ children: React.ReactNode; speed: number; className?:
   );
 };
 
-const FocusAreaCard: React.FC<{ area: typeof focusAreas[0] }> = ({ area }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [rotate, setRotate] = useState({ x: 0, y: 0 });
-  const [glowPosition, setGlowPosition] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
-    const xPct = mouseX / width - 0.5;
-    const yPct = mouseY / height - 0.5;
-
-    setRotate({
-      x: yPct * -14, // Max rotation
-      y: xPct * 14,
-    });
-    setGlowPosition({ x: mouseX, y: mouseY });
-  };
-
-  const handleMouseEnter = () => setIsHovered(true);
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    setRotate({ x: 0, y: 0 });
-  };
-
+const BentoCard: React.FC<{ area: typeof focusAreas[0]; index: number }> = ({ area, index }) => {
   return (
-    <div
-      ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        transform: `perspective(1000px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg)`,
-        transition: 'transform 0.1s ease-out',
-        transformStyle: 'preserve-3d',
-      }}
-      className="group relative p-6 text-center glass-card rounded-3xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-hcl-blue/30"
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.5, delay: index * 0.1, type: 'spring', stiffness: 100 }}
+      className={`group relative overflow-hidden rounded-[2rem] p-8 transition-all duration-500 ${area.span} bg-white dark:bg-[#111] border border-gray-200 dark:border-white/5 hover:border-hcl-blue/50 dark:hover:border-hcl-blue/50 shadow-sm hover:shadow-2xl hover:shadow-hcl-blue/10`}
     >
-      <div
-        className="absolute -inset-px rounded-3xl transition-opacity duration-500"
-        style={{
-          opacity: isHovered ? 1 : 0,
-          background: `radial-gradient(600px at ${glowPosition.x}px ${glowPosition.y}px, rgba(41, 171, 226, 0.15), transparent 80%)`,
-        }}
-      />
-      
-      <div className="relative z-10 flex flex-col items-center h-full">
-        <div 
-          className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-hcl-blue/10 dark:bg-hcl-blue/20 group-hover:bg-hcl-blue/20 transition-colors duration-300" 
-          style={{ transform: 'translateZ(40px)' }}
-        >
-          <div className="h-10 w-10 text-hcl-blue animate-[pulse_4s_cubic-bezier(0.4,0,0.6,1)_infinite] group-hover:scale-110 transition-transform duration-300" style={{ transform: 'translateZ(20px)' }}>
-            {area.icon}
-          </div>
-        </div>
-        <h3 
-          className="font-space-grotesk text-xl font-bold text-primary-text dark:text-white mb-2" 
-          style={{ transform: 'translateZ(30px)' }}
-        >
-          {area.name}
-        </h3>
-        <p 
-          className="text-sm text-gray-500 dark:text-gray-400 flex-grow"
-          style={{ transform: 'translateZ(20px)' }}
-        >
-          {area.description}
-        </p>
-      </div>
-    </div>
-  );
-};
+       {/* Hover Gradient Overlay */}
+       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-hcl-blue/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+       
+       {/* Technical Corner Accents (HUD Style) */}
+       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+            <div className="absolute top-6 right-6 w-2 h-2 border-t-2 border-r-2 border-gray-300 dark:border-gray-700 group-hover:border-hcl-blue group-hover:w-6 group-hover:h-6 transition-all duration-300 ease-out" />
+            <div className="absolute bottom-6 left-6 w-2 h-2 border-b-2 border-l-2 border-gray-300 dark:border-gray-700 group-hover:border-hcl-blue group-hover:w-6 group-hover:h-6 transition-all duration-300 ease-out" />
+       </div>
 
+       <div className="relative z-10 h-full flex flex-col justify-between">
+          {/* Icon Container */}
+          <div className="w-14 h-14 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 flex items-center justify-center text-hcl-blue group-hover:scale-110 group-hover:bg-hcl-blue group-hover:text-white transition-all duration-500 shadow-sm">
+             {React.cloneElement(area.icon as React.ReactElement, { className: "w-7 h-7" })}
+          </div>
+          
+          <div className="mt-8">
+             <h3 className="font-space-grotesk text-2xl font-bold text-primary-text dark:text-white mb-3 group-hover:text-hcl-blue transition-colors duration-300">
+               {area.name}
+             </h3>
+             <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-3 group-hover:text-gray-900 dark:group-hover:text-gray-200 transition-colors duration-300">
+               {area.description}
+             </p>
+          </div>
+          
+          {/* Decorative ID Number */}
+          <div className="absolute top-6 right-10 text-[10px] font-mono text-gray-300 dark:text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-2 group-hover:translate-x-0">
+             SYS_0{index + 1}
+          </div>
+       </div>
+    </motion.div>
+  );
+}
 
 export const HomePage: React.FC = () => {
   return (
-    <div className="space-y-20 md:space-y-32">
-        {/* Hero Section */}
-        <div className="relative pt-20 pb-24 text-center">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-white to-teal-100 dark:from-gray-900 dark:via-gray-800 dark:to-hcl-teal/20"></div>
-            <div className="absolute inset-0 bg-grid-gray-200/[0.2] dark:bg-grid-gray-700/[0.2] [mask-image:linear-gradient(to_bottom,white,transparent,white)]"></div>
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+    <div className="overflow-hidden">
+        {/* Immersive Hero Section */}
+        <div className="relative min-h-screen flex items-center justify-center pt-20 pb-20 overflow-hidden">
+             {/* Dynamic Backgrounds */}
+            <div className="absolute inset-0 bg-gradient-to-b from-gray-50 via-white to-blue-50 dark:from-black dark:via-[#0a0a0a] dark:to-[#111827] z-0"></div>
+            <div className="absolute inset-0 bg-grid-pattern bg-[length:30px_30px] opacity-50 z-0"></div>
+            <HeroBackground />
+            
+            {/* Glowing Orbs */}
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-hcl-blue/20 rounded-full blur-[128px] animate-pulse-slow z-0"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-tech-purple/20 rounded-full blur-[128px] animate-pulse-slow animation-delay-2000 z-0"></div>
+
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
                 <AnimatedSection>
-                    <Parallax speed={-0.3}>
-                      <Bot className="w-20 h-20 text-hcl-blue mx-auto mb-6 animate-float" />
-                    </Parallax>
-                    <Parallax speed={-0.15}>
-                      <h1 className="font-space-grotesk text-4xl md:text-7xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-hcl-blue via-tech-purple to-hcl-teal pb-4">
-                          Supercharging Progress Through AI
-                      </h1>
-                    </Parallax>
-                    <Parallax speed={0.05}>
-                      <p className="text-gray-600 dark:text-gray-300 text-lg md:text-xl max-w-3xl mx-auto mt-4 leading-relaxed">
-                          Welcome to the AI Club at HCLTech Madurai—a community of innovators, learners, and builders passionate about shaping the future with artificial intelligence.
-                      </p>
-                    </Parallax>
-                    <Parallax speed={0.1}>
-                      <div className="mt-10 flex justify-center items-center gap-4">
-                          <Link to="/join"><Button>Join the Club</Button></Link>
-                          <Link to="/projects"><Button variant="outline">View Projects</Button></Link>
-                      </div>
-                    </Parallax>
+                    <div className="inline-flex items-center justify-center p-1 mb-8 rounded-full bg-white/40 dark:bg-gray-800/40 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-sm">
+                       <span className="px-4 py-1 text-sm font-medium text-hcl-blue tracking-wide uppercase">
+                         Innovate • Build • Inspire
+                       </span>
+                    </div>
+
+                    <h1 className="font-space-grotesk text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-primary-text dark:text-white mb-6 leading-tight">
+                        Building the <br/>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-hcl-blue via-tech-purple to-hcl-teal">
+                          <Typewriter words={['Future', 'Intelligence', 'Next Gen']} />
+                        </span>
+                        <span className="text-hcl-blue">.</span>
+                    </h1>
+                    
+                    <p className="text-gray-600 dark:text-gray-300 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+                        The official AI Club at HCLTech Madurai. We are a collective of dreamers and doers harnessing the power of Artificial Intelligence.
+                    </p>
+                    
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <Link to="/join">
+                           <button className="px-8 py-4 bg-primary-text dark:bg-white text-white dark:text-black font-bold rounded-full hover:scale-105 transition-transform shadow-lg shadow-hcl-blue/20">
+                             Start Building
+                           </button>
+                        </Link>
+                        <Link to="/projects">
+                            <button className="px-8 py-4 bg-transparent border border-gray-300 dark:border-gray-700 text-primary-text dark:text-white font-bold rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                              View Projects
+                            </button>
+                        </Link>
+                    </div>
                 </AnimatedSection>
             </div>
         </div>
 
-        {/* Stats Section */}
-        <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <Parallax speed={0.1}>
-            <div className="glass-card grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 p-6 md:p-8 rounded-2xl max-w-4xl mx-auto divide-x divide-gray-200/50 dark:divide-gray-700/50">
-                <CountUpStat value={100} label="Members" />
-                <CountUpStat value={15} label="Projects" />
-                <CountUpStat value={25} label="Workshops" />
-                <CountUpStat value={5} label="Hackathons" />
-            </div>
-          </Parallax>
-        </AnimatedSection>
-        
-        {/* About the Club Section */}
-        <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
-                <Parallax speed={0.15} className="text-center md:text-left">
-                    <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white mb-4">
-                        About the Club
-                    </h2>
-                    <p className="font-space-grotesk text-xl text-hcl-teal mb-6">
-                        “Driven by Curiosity. United by Code.”
-                    </p>
-                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-8 max-w-lg mx-auto md:mx-0">
-                        Our mission is to cultivate a dynamic environment for AI enthusiasts at HCLTech Madurai. We aim to empower members by providing resources for learning, fostering collaboration on innovative projects, and connecting them with a network of peers and experts. Our vision is to be the central hub for AI excellence, driving technological growth and creative problem-solving within our community.
-                    </p>
-                    <Link to="/about">
-                        <Button variant="outline">Learn More About Us</Button>
-                    </Link>
-                </Parallax>
-                <Parallax speed={-0.1}>
-                  <div className="grid grid-cols-2 grid-rows-2 gap-4 h-80 lg:h-96">
-                      <div className="col-span-1 row-span-2 overflow-hidden rounded-2xl shadow-lg group">
-                          <img src="https://placehold.co/400x600/008080/FFFFFF?text=Workshop" alt="AI workshop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
-                      </div>
-                      <div className="col-span-1 row-span-1 overflow-hidden rounded-2xl shadow-lg group">
-                          <img src="https://placehold.co/400x300/29ABE2/FFFFFF?text=Teamwork" alt="Team collaboration" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
-                      </div>
-                      <div className="col-span-1 row-span-1 overflow-hidden rounded-2xl shadow-lg group">
-                          <img src="https://placehold.co/400x300/5F1EBE/FFFFFF?text=Innovation" alt="Innovation idea" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
-                      </div>
+        {/* Floating Stats HUD */}
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-20">
+           <Parallax speed={0.05}>
+              <div className="glass-panel rounded-3xl p-8 border-t border-white/50 dark:border-white/10 shadow-2xl">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-gray-200/50 dark:divide-gray-800/50">
+                      <CountUpStat value={100} label="Active Members" />
+                      <CountUpStat value={15} label="Shipped Projects" />
+                      <CountUpStat value={25} label="Workshops Held" />
+                      <CountUpStat value={5} label="Hackathons" />
                   </div>
-                </Parallax>
-            </div>
-        </AnimatedSection>
-
-        {/* Our Focus Areas Section */}
-        <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <Parallax speed={0.1}>
-            <div className="text-center mb-12">
-                <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white">Our Focus Areas</h2>
-                <p className="font-space-grotesk text-xl text-hcl-teal mt-2">
-                    “Innovate. Create. Collaborate.”
-                </p>
-            </div>
-          </Parallax>
-          <Parallax speed={-0.05}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
-                {focusAreas.map(area => (
-                    <FocusAreaCard key={area.name} area={area} />
-                ))}
-            </div>
-          </Parallax>
-        </AnimatedSection>
+              </div>
+           </Parallax>
+        </div>
+        
+        {/* Re-Designed Focus Areas (Futuristic HUD Style) */}
+        <div className="py-32 bg-gray-50 dark:bg-[#050505] relative overflow-hidden">
+             {/* Cyber Grid Background */}
+             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] opacity-30 pointer-events-none"></div>
+             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-hcl-blue/5 rounded-full blur-3xl pointer-events-none"></div>
+             
+             <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <AnimatedSection>
+                  <div className="mb-20 text-center max-w-3xl mx-auto">
+                      <h2 className="font-space-grotesk text-4xl md:text-6xl font-bold mb-6 dark:text-white tracking-tight">Our Focus Areas</h2>
+                      <p className="text-lg text-gray-600 dark:text-gray-400">
+                          We dive deep into the technologies shaping tomorrow. Our core pillars of research and development include:
+                      </p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 auto-rows-[minmax(240px,auto)]">
+                      {focusAreas.map((area, index) => (
+                          <BentoCard key={area.name} area={area} index={index} />
+                      ))}
+                  </div>
+                </AnimatedSection>
+             </div>
+        </div>
 
         {/* Marquee Section */}
-        <div className="py-12 bg-gray-50 dark:bg-gray-800/50 my-20 md:my-32">
+        <div className="py-16 bg-gray-100 dark:bg-black border-y border-gray-200 dark:border-gray-800">
             <div className="relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
                 <motion.div
                     className="flex items-center whitespace-nowrap"
                     initial={{ x: '0%' }}
                     animate={{ x: '-50%' }}
-                    transition={{ ease: 'linear', duration: 20, repeat: Infinity }}
+                    transition={{ ease: 'linear', duration: 30, repeat: Infinity }}
                 >
                     {allMarqueeWords.map((word, index) => (
-                        <div key={index} className="flex items-center">
-                            <span className="mx-8 font-space-grotesk text-4xl md:text-5xl font-bold tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-br from-hcl-blue via-tech-purple to-hcl-teal">
+                        <div key={index} className="flex items-center mx-8">
+                            <span className="font-space-grotesk text-6xl md:text-8xl font-bold uppercase text-transparent bg-clip-text bg-gradient-to-b from-gray-300 to-gray-100 dark:from-gray-800 dark:to-gray-900 hover:from-hcl-blue hover:to-hcl-teal transition-colors duration-500 cursor-default">
                                 {word}
                             </span>
-                            <span className="text-4xl md:text-5xl text-gray-300 dark:text-gray-600">•</span>
                         </div>
                     ))}
                 </motion.div>
             </div>
         </div>
 
-        {/* What We Do Section */}
-        <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <Parallax speed={0.1}>
-            <div className="text-center mb-12">
-                <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white">What We Do</h2>
-                <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mt-4">We focus on three core pillars to foster AI innovation and growth.</p>
+        {/* What We Do Section (Classic Layout Refined) */}
+        <div className="py-24 md:py-32 bg-gray-50 dark:bg-[#0f0f0f]">
+          <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row gap-16 items-start">
+               <div className="md:w-1/3 sticky top-24">
+                  <h2 className="font-space-grotesk text-4xl md:text-5xl font-bold text-primary-text dark:text-white mb-6">
+                    Three Pillars of<br/> <span className="text-hcl-blue">Excellence</span>
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-8">
+                    Our community thrives on a cycle of learning, building, and connecting. Each pillar supports the next, creating a robust ecosystem for growth.
+                  </p>
+                  <Link to="/about"><Button variant="outline">Read Our Manifesto</Button></Link>
+               </div>
+               <div className="md:w-2/3 grid gap-8">
+                  <Card icon={<Lightbulb className="w-8 h-8 text-hcl-blue"/>} title="Learn & Upskill" description="We organize workshops, tech talks, and study groups on cutting-edge AI topics, from deep learning to generative AI." />
+                  <Card icon={<Code className="w-8 h-8 text-hcl-blue"/>} title="Build & Innovate" description="Members collaborate on real-world projects, building prototypes that solve business challenges and push technological boundaries." />
+                  <Card icon={<Users className="w-8 h-8 text-hcl-blue"/>} title="Connect & Collaborate" description="We provide a platform for networking with peers, mentors, and experts, fostering a vibrant and supportive AI community." />
+               </div>
             </div>
-          </Parallax>
-          <Parallax speed={-0.05}>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <Card icon={<Lightbulb className="w-10 h-10 text-hcl-blue"/>} title="Learn & Upskill" description="We organize workshops, tech talks, and study groups on cutting-edge AI topics, from deep learning to generative AI." />
-                <Card icon={<Code className="w-10 h-10 text-hcl-blue"/>} title="Build & Innovate" description="Members collaborate on real-world projects, building prototypes that solve business challenges and push technological boundaries." />
-                <Card icon={<Users className="w-10 h-10 text-hcl-blue"/>} title="Connect & Collaborate" description="We provide a platform for networking with peers, mentors, and experts, fostering a vibrant and supportive AI community." />
-            </div>
-          </Parallax>
-        </AnimatedSection>
+          </AnimatedSection>
+        </div>
 
         {/* Featured Projects Section */}
-        <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <Parallax speed={0.1}>
-              <div className="text-center mb-12">
-                  <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white">Featured Projects</h2>
-                  <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mt-4">A glimpse into the innovative solutions being built by our members.</p>
-              </div>
-            </Parallax>
-            <Parallax speed={-0.05}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  <Card icon={<BrainCircuit className="w-10 h-10 text-hcl-blue"/>} title="NeuroLens" description="An AI-powered document summarizer that converts long reports into precise insights." />
-                  <Card icon={<Bot className="w-10 h-10 text-hcl-blue"/>} title="SmartBot" description="A custom conversational AI assistant that integrates with internal tools to automate queries." />
-                  <Card icon={<Award className="w-10 h-10 text-hcl-blue"/>} title="Visionary" description="A computer vision prototype for quality inspection, detecting surface defects in manufacturing." />
-              </div>
-            </Parallax>
-            <Parallax speed={0.1}>
-              <div className="text-center mt-12">
-                  <Link to="/projects"><Button>Explore All Projects</Button></Link>
-              </div>
-            </Parallax>
-        </AnimatedSection>
+        <div className="py-24 md:py-32 relative">
+             {/* Abstract background shapes */}
+            <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-hcl-blue/5 to-transparent pointer-events-none"></div>
 
-        {/* Meet the Team Section */}
-        <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <Parallax speed={0.1}>
-              <div className="text-center mb-12">
-                  <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white">Meet the Leadership</h2>
-                   <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mt-4">The core team driving the club's vision and activities.</p>
+            <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+              <div className="flex justify-between items-end mb-12">
+                  <div>
+                      <h2 className="font-space-grotesk text-4xl md:text-5xl font-bold text-primary-text dark:text-white">Featured Projects</h2>
+                  </div>
+                  <Link to="/projects" className="hidden md:block text-hcl-blue hover:text-hcl-teal font-semibold transition-colors">View All &rarr;</Link>
               </div>
-            </Parallax>
-            <Parallax speed={-0.05}>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <div className="group relative rounded-2xl overflow-hidden h-80 md:h-96 cursor-pointer shadow-xl">
+                      <img src="https://placehold.co/600x800/29ABE2/FFFFFF?text=NeuroLens" alt="NeuroLens" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                      <div className="absolute bottom-0 left-0 p-8 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                          <div className="text-hcl-blue text-sm font-bold mb-2">Machine Learning</div>
+                          <h3 className="text-white text-2xl font-bold mb-2">NeuroLens</h3>
+                          <p className="text-gray-300 text-sm line-clamp-2">An AI-powered document summarizer that converts long reports into precise insights.</p>
+                      </div>
+                  </div>
+                  
+                  <div className="group relative rounded-2xl overflow-hidden h-80 md:h-96 cursor-pointer shadow-xl md:-mt-8">
+                      <img src="https://placehold.co/600x800/008080/FFFFFF?text=SmartBot" alt="SmartBot" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                      <div className="absolute bottom-0 left-0 p-8 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                          <div className="text-hcl-teal text-sm font-bold mb-2">Generative AI</div>
+                          <h3 className="text-white text-2xl font-bold mb-2">SmartBot</h3>
+                          <p className="text-gray-300 text-sm line-clamp-2">A custom conversational AI assistant that integrates with internal tools.</p>
+                      </div>
+                  </div>
+
+                  <div className="group relative rounded-2xl overflow-hidden h-80 md:h-96 cursor-pointer shadow-xl">
+                      <img src="https://placehold.co/600x800/5F1EBE/FFFFFF?text=Visionary" alt="Visionary" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                      <div className="absolute bottom-0 left-0 p-8 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                          <div className="text-tech-purple text-sm font-bold mb-2">Computer Vision</div>
+                          <h3 className="text-white text-2xl font-bold mb-2">Visionary</h3>
+                          <p className="text-gray-300 text-sm line-clamp-2">A computer vision prototype for quality inspection and defect detection.</p>
+                      </div>
+                  </div>
+              </div>
+              
+              <div className="mt-8 text-center md:hidden">
+                  <Link to="/projects"><Button>View All Projects</Button></Link>
+              </div>
+            </AnimatedSection>
+        </div>
+
+        {/* Leadership Section */}
+        <div className="py-24 bg-gray-50 dark:bg-[#0f0f0f]">
+           <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-16">
+                  <h2 className="font-space-grotesk text-4xl font-bold dark:text-white">Meet the Core</h2>
+                  <p className="text-gray-500 mt-4">The minds orchestrating the movement.</p>
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                   {teamMembers.map(member => <TeamMemberCard key={member.name} member={member} />)}
               </div>
-            </Parallax>
-        </AnimatedSection>
+           </AnimatedSection>
+        </div>
 
         {/* Testimonials */}
-        <AnimatedSection>
-            <Parallax speed={0.1}>
+        <div className="py-24 overflow-hidden">
+            <AnimatedSection>
               <div className="text-center mb-12">
-                  <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white">What Our Members Say</h2>
+                  <h2 className="font-space-grotesk text-4xl font-bold dark:text-white">Voices of the Community</h2>
               </div>
-            </Parallax>
-            <ScrollingTestimonials />
-        </AnimatedSection>
+              <ScrollingTestimonials />
+            </AnimatedSection>
+        </div>
 
-        {/* Join Us CTA */}
-        <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* CTA */}
+        <div className="py-24 container mx-auto px-4 sm:px-6 lg:px-8">
             <Parallax speed={0.1}>
-              <div className="relative glass-card p-10 md:p-16 rounded-3xl overflow-hidden text-center">
-                  <div className="absolute inset-0 bg-gradient-to-br from-hcl-blue/10 to-hcl-teal/10 dark:from-hcl-blue/20 dark:to-hcl-teal/20"></div>
+              <div className="relative rounded-[2.5rem] overflow-hidden p-12 md:p-24 text-center">
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-black z-0"></div>
+                  <div className="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] z-0"></div>
+                  {/* Abstract gradient blobs */}
+                  <div className="absolute top-0 left-0 w-64 h-64 bg-hcl-blue/40 blur-[80px]"></div>
+                  <div className="absolute bottom-0 right-0 w-64 h-64 bg-tech-purple/40 blur-[80px]"></div>
+                  
                   <div className="relative z-10">
-                      <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white">Ready to Shape the Future?</h2>
-                      <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mt-4 mb-8">Join a community of innovators and start your journey in AI today. Whether you're a beginner or an expert, there's a place for you here.</p>
-                      <Link to="/join"><Button>Become a Member</Button></Link>
+                      <h2 className="font-space-grotesk text-4xl md:text-6xl font-bold text-white mb-6">Ready to shape the future?</h2>
+                      <p className="text-gray-300 text-xl max-w-2xl mx-auto mb-10">Join a community of innovators. Access resources, mentorship, and the platform you need to build what's next.</p>
+                      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                         <Link to="/join"><button className="px-8 py-4 bg-hcl-blue text-white font-bold rounded-full hover:bg-hcl-teal transition-colors shadow-lg shadow-hcl-blue/30">Become a Member</button></Link>
+                         <Link to="/contact"><button className="px-8 py-4 bg-transparent border border-white/30 text-white font-bold rounded-full hover:bg-white/10 transition-colors">Partner With Us</button></Link>
+                      </div>
                   </div>
               </div>
             </Parallax>
-        </AnimatedSection>
+        </div>
         
-        {/* Our Partners Section */}
-        <AnimatedSection>
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <Parallax speed={0.1}>
-                  <h2 className="font-space-grotesk text-3xl sm:text-4xl font-semibold text-primary-text dark:text-white mb-4">Our Esteemed Partners</h2>
-                  <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mb-12">
-                      We are proud to collaborate with industry leaders to foster innovation and provide opportunities for our members.
-                  </p>
-                </Parallax>
-                <Parallax speed={-0.1}>
-                  <div className="w-full inline-block overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
+        {/* Partners */}
+        <div className="py-12 border-t border-gray-200 dark:border-gray-800">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                 <div className="w-full inline-block overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
                       <motion.div
                           className="flex items-center"
                           initial={{ x: '0%' }}
@@ -352,21 +342,19 @@ export const HomePage: React.FC = () => {
                                   href={partner.websiteUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="flex-shrink-0 mx-10"
-                                  title={partner.name}
+                                  className="flex-shrink-0 mx-12 opacity-40 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0"
                               >
                                   <img
                                       src={partner.logoUrl}
                                       alt={`${partner.name} logo`}
-                                      className="h-16 w-auto object-contain filter grayscale hover:grayscale-0 opacity-60 hover:opacity-100 dark:opacity-40 dark:hover:opacity-100 transition-all duration-300 ease-in-out"
+                                      className="h-12 w-auto object-contain"
                                   />
                               </a>
                           ))}
                       </motion.div>
                   </div>
-                </Parallax>
             </div>
-        </AnimatedSection>
+        </div>
     </div>
   );
 };

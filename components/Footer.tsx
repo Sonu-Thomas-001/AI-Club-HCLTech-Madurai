@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Bot, LinkedIn, GitHub, YouTube } from './Icons';
 import { Link } from './Link';
@@ -27,104 +28,97 @@ export const Footer: React.FC = () => {
   ];
 
   const socialLinks = [
-    { name: 'LinkedIn', icon: <LinkedIn className="w-6 h-6" />, path: '#' },
-    { name: 'GitHub', icon: <GitHub className="w-6 h-6" />, path: '#' },
-    { name: 'YouTube', icon: <YouTube className="w-6 h-6" />, path: '#' },
+    { name: 'LinkedIn', icon: <LinkedIn className="w-5 h-5" />, path: '#' },
+    { name: 'GitHub', icon: <GitHub className="w-5 h-5" />, path: '#' },
+    { name: 'YouTube', icon: <YouTube className="w-5 h-5" />, path: '#' },
   ]
 
   return (
-    <footer className="relative bg-gray-900 dark:bg-black text-gray-400 mt-20 overflow-hidden border-t-2 border-hcl-blue/20">
-      <div className="absolute inset-0 bg-grid-gray-700/[0.1] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[60%] -translate-y-1/2 rounded-full bg-hcl-blue/10 dark:bg-hcl-blue/20 blur-3xl" aria-hidden="true"></div>
+    <footer className="relative bg-black text-gray-400 overflow-hidden pt-24 pb-12 border-t border-white/10">
+      {/* Giant Watermark */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full flex justify-center items-center pointer-events-none select-none overflow-hidden">
+          <h1 className="text-[20vw] font-bold text-white/[0.03] whitespace-nowrap font-space-grotesk tracking-tighter">
+              AI CLUB
+          </h1>
+      </div>
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
-        
-        {/* Top section: Brand and Newsletter */}
-        <div className="grid md:grid-cols-2 gap-10 mb-12 border-b border-gray-700/50 pb-12">
-          {/* Left: Brand Info */}
-          <div>
-            <div className="flex items-center mb-4">
-              <Bot className="h-10 w-10 text-hcl-blue" />
-              <span className="font-space-grotesk font-bold text-2xl ml-3 text-white">
-                AI Club HCLTech
-              </span>
-            </div>
-            <p className="max-w-md">
-              A community of innovators, learners, and builders passionate about shaping the future with artificial intelligence.
-            </p>
-            <div className="flex space-x-4 mt-6">
-              {socialLinks.map(link => (
-                 <a 
-                    key={link.name} 
-                    href={link.path} 
-                    className="p-3 bg-gray-800/50 rounded-full hover:bg-hcl-blue/20 hover:text-hcl-blue transition-all duration-300" 
-                    aria-label={link.name}
-                >
-                    {link.icon}
-                </a>
-              ))}
-            </div>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
+          
+          {/* Brand Column */}
+          <div className="md:col-span-4 flex flex-col items-start">
+             <Link to="/" className="flex items-center mb-6 group">
+                <div className="p-2 bg-white/5 rounded-lg border border-white/10 group-hover:border-hcl-blue/50 transition-colors">
+                   <Bot className="h-8 w-8 text-hcl-blue" />
+                </div>
+                <span className="font-space-grotesk font-bold text-2xl ml-3 text-white tracking-tight">
+                  AI Club HCLTech
+                </span>
+              </Link>
+              <p className="text-gray-500 mb-8 leading-relaxed">
+                  Empowering the next generation of innovators through Artificial Intelligence, collaboration, and continuous learning.
+              </p>
+              <div className="flex gap-4">
+                  {socialLinks.map(link => (
+                      <a 
+                        key={link.name} 
+                        href={link.path} 
+                        className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 hover:bg-hcl-blue hover:border-hcl-blue hover:text-white transition-all duration-300"
+                        aria-label={link.name}
+                      >
+                          {link.icon}
+                      </a>
+                  ))}
+              </div>
           </div>
-          {/* Right: Newsletter */}
-          <div>
-            <h4 className="font-space-grotesk font-bold text-lg text-white mb-3">Stay Updated</h4>
-            <p className="mb-4">Subscribe to our newsletter for the latest news, events, and project updates.</p>
-            <form className="flex flex-col sm:flex-row gap-2">
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
-                className="flex-grow w-full px-4 py-3 rounded-xl border border-gray-600 bg-gray-800/50 focus:outline-none focus:ring-2 focus:ring-hcl-blue transition text-white placeholder-gray-500"
-                required
-              />
-              <Button type="submit" className="flex-shrink-0">Subscribe</Button>
-            </form>
-          </div>
-        </div>
 
-        {/* Bottom section: Link columns */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div>
-              <h4 className="font-space-grotesk font-bold text-lg text-white mb-4">Club</h4>
-              <ul className="space-y-3">
+          {/* Links Columns */}
+          <div className="md:col-span-2 md:col-start-6">
+              <h4 className="font-space-grotesk font-bold text-white mb-6">Club</h4>
+              <ul className="space-y-4">
                   {clubLinks.map(link => (
                       <li key={link.name}>
-                          <Link to={link.path} className="hover:text-hcl-blue transition-colors duration-300">{link.name}</Link>
+                          <Link to={link.path} className="hover:text-hcl-blue transition-colors duration-300 text-sm">{link.name}</Link>
                       </li>
                   ))}
               </ul>
           </div>
-          <div>
-              <h4 className="font-space-grotesk font-bold text-lg text-white mb-4">Engage</h4>
-              <ul className="space-y-3">
+          <div className="md:col-span-2">
+              <h4 className="font-space-grotesk font-bold text-white mb-6">Engage</h4>
+              <ul className="space-y-4">
                   {engageLinks.map(link => (
                       <li key={link.name}>
-                          <Link to={link.path} className="hover:text-hcl-blue transition-colors duration-300">{link.name}</Link>
+                          <Link to={link.path} className="hover:text-hcl-blue transition-colors duration-300 text-sm">{link.name}</Link>
                       </li>
                   ))}
               </ul>
           </div>
-          <div>
-              <h4 className="font-space-grotesk font-bold text-lg text-white mb-4">Support</h4>
-              <ul className="space-y-3">
+          <div className="md:col-span-2">
+              <h4 className="font-space-grotesk font-bold text-white mb-6">Support</h4>
+              <ul className="space-y-4">
                   {supportLinks.map(link => (
                       <li key={link.name}>
-                          <Link to={link.path} className="hover:text-hcl-blue transition-colors duration-300">{link.name}</Link>
+                          <Link to={link.path} className="hover:text-hcl-blue transition-colors duration-300 text-sm">{link.name}</Link>
                       </li>
                   ))}
               </ul>
           </div>
-          <div>
-            <h4 className="font-space-grotesk font-bold text-lg text-white mb-4">Contact</h4>
-            <p>HCLTech, Madurai, Tamil Nadu</p>
-            <a href="mailto:aiclub.madurai@hcltech.com" className="hover:text-hcl-blue transition-colors duration-300 break-all">aiclub.madurai@hcltech.com</a>
-          </div>
         </div>
-      </div>
-
-      {/* Copyright bar */}
-      <div className="border-t border-gray-700/50 py-6">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
-            <p>© {new Date().getFullYear()} AI Club – HCLTech Madurai. All rights reserved.</p>
+        
+        {/* Newsletter & Copyright */}
+        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p className="text-sm text-gray-600">© {new Date().getFullYear()} AI Club HCLTech Madurai. All rights reserved.</p>
+            
+            <div className="flex items-center gap-2 bg-white/5 p-1 pl-4 rounded-full border border-white/10 max-w-xs w-full">
+                 <input 
+                    type="email" 
+                    placeholder="Subscribe to newsletter" 
+                    className="bg-transparent border-none outline-none text-sm text-white placeholder-gray-600 w-full"
+                 />
+                 <button className="w-8 h-8 rounded-full bg-hcl-blue flex items-center justify-center text-white hover:bg-hcl-teal transition-colors">
+                    <span className="text-lg leading-none pb-1">&rarr;</span>
+                 </button>
+            </div>
         </div>
       </div>
     </footer>

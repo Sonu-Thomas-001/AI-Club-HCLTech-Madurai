@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { HomePage } from './components/HomePage';
@@ -19,6 +20,8 @@ import { LeaderboardPage } from './pages/LeaderboardPage';
 import { BackToTopButton } from './components/BackToTopButton';
 import { ChatbotIcon } from './components/ChatbotIcon';
 import { AIAssistant } from './components/AIAssistant';
+import { CustomCursor } from './components/CustomCursor';
+import { ScrollProgress } from './components/ScrollProgress';
 import { AnimatePresence } from 'framer-motion';
 import { ThemeContext } from './contexts/ThemeContext';
 
@@ -83,8 +86,13 @@ const App: React.FC = () => {
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col transition-colors duration-500 relative">
+        {/* Global Noise Texture */}
+        <div className="bg-noise"></div>
+        
+        <CustomCursor />
+        <ScrollProgress />
         <Header />
-        <main className="flex-grow">
+        <main className="flex-grow relative z-10">
           <CurrentPage />
         </main>
         <Footer />

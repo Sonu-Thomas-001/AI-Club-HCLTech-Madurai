@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useContext } from 'react';
 import { Bot, Sun, Moon, ChevronDown } from './Icons';
 import { ThemeContext } from '../contexts/ThemeContext';
@@ -27,7 +28,7 @@ export const Header: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
+      setScrolled(window.scrollY > 50);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -57,13 +58,18 @@ export const Header: React.FC = () => {
     setOpenMobileSubMenu(openMobileSubMenu === name ? null : name);
   };
 
+  // Styles for "Island" navigation vs Standard navigation
+  const headerClasses = scrolled
+    ? 'fixed top-4 left-0 right-0 mx-auto max-w-5xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 rounded-full shadow-2xl shadow-black/5 z-50 transition-all duration-500 ease-in-out px-2'
+    : 'sticky top-0 z-50 transition-all duration-300 bg-transparent backdrop-blur-sm';
+
   return (
-    <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg shadow-md' : 'bg-transparent'}`}>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+    <header className={headerClasses}>
+      <div className={`container mx-auto px-4 sm:px-6 lg:px-8 ${scrolled ? 'py-2' : ''}`}>
+        <div className={`flex items-center justify-between ${scrolled ? 'h-14' : 'h-20'}`}>
           <Link to="/" className="flex items-center">
-            <Bot className="h-8 w-8 text-hcl-blue" />
-            <span className="font-space-grotesk font-bold text-xl ml-2 text-primary-text dark:text-white">
+            <Bot className={`${scrolled ? 'h-6 w-6' : 'h-8 w-8'} text-hcl-blue transition-all`} />
+            <span className={`font-space-grotesk font-bold ${scrolled ? 'text-lg' : 'text-xl'} ml-2 text-primary-text dark:text-white transition-all`}>
               AI Club HCLTech
             </span>
           </Link>
@@ -71,17 +77,17 @@ export const Header: React.FC = () => {
             {navLinks.map((link) => (
               link.children ? (
                 <div key={link.name} className="relative group">
-                  <button className="flex items-center font-medium text-secondary-text dark:text-gray-300 hover:text-hcl-blue dark:hover:text-hcl-blue transition-colors duration-300">
+                  <button className="flex items-center font-medium text-sm text-secondary-text dark:text-gray-300 hover:text-hcl-blue dark:hover:text-hcl-blue transition-colors duration-300">
                     {link.name}
-                    <ChevronDown className="w-4 h-4 ml-1 transition-transform duration-300 group-hover:rotate-180" />
+                    <ChevronDown className="w-3 h-3 ml-1 transition-transform duration-300 group-hover:rotate-180" />
                   </button>
                   <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto">
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-2 w-48 border border-gray-200 dark:border-gray-700">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-2 w-48 border border-gray-200 dark:border-gray-700">
                       {link.children.map((child) => (
                         <Link
                           key={child.name}
                           to={child.path}
-                          className="block px-4 py-2 text-sm text-secondary-text dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md hover:text-hcl-blue"
+                          className="block px-4 py-2 text-sm text-secondary-text dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg hover:text-hcl-blue"
                         >
                           {child.name}
                         </Link>
@@ -93,7 +99,7 @@ export const Header: React.FC = () => {
                 <Link
                   key={link.name}
                   to={link.path!}
-                  className="font-medium text-secondary-text dark:text-gray-300 hover:text-hcl-blue dark:hover:text-hcl-blue transition-colors duration-300"
+                  className="font-medium text-sm text-secondary-text dark:text-gray-300 hover:text-hcl-blue dark:hover:text-hcl-blue transition-colors duration-300"
                 >
                   {link.name}
                 </Link>
@@ -103,10 +109,15 @@ export const Header: React.FC = () => {
           <div className="hidden lg:flex items-center space-x-4">
             <ThemeToggle />
             <Link to="/join">
-              <Button>Join Us</Button>
+              {scrolled ? (
+                 <Button className="px-4 py-2 text-sm rounded-full">Join</Button>
+              ) : (
+                 <Button>Join Us</Button>
+              )}
             </Link>
           </div>
-          <div className="lg:hidden">
+          <div className="lg:hidden flex items-center gap-4">
+             <ThemeToggle />
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-secondary-text dark:text-gray-300 hover:text-hcl-blue focus:outline-none"
@@ -124,9 +135,9 @@ export const Header: React.FC = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white dark:bg-gray-800 overflow-hidden"
+            className="lg:hidden bg-white dark:bg-gray-800 overflow-hidden rounded-b-2xl border-t border-gray-100 dark:border-gray-700 shadow-xl"
           >
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <div className="px-4 pt-2 pb-4 space-y-1">
               {navLinks.map((link) => (
                 link.children ? (
                   <div key={link.name}>
@@ -167,12 +178,11 @@ export const Header: React.FC = () => {
                   </Link>
                 )
               ))}
-               <div className="border-t border-gray-200 dark:border-gray-700 my-4"></div>
-               <div className="px-3 py-2 flex items-center justify-between">
-                  <Link to="/join" onClick={() => setIsOpen(false)}>
-                    <Button>Join Us</Button>
+               <div className="border-t border-gray-200 dark:border-gray-700 my-4 pt-4"></div>
+               <div className="flex justify-center">
+                  <Link to="/join" onClick={() => setIsOpen(false)} className="w-full">
+                    <Button className="w-full">Join Us</Button>
                   </Link>
-                  <ThemeToggle />
                </div>
             </div>
           </motion.div>
