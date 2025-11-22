@@ -329,6 +329,12 @@ export const HomePage: React.FC = () => {
         {/* Partners */}
         <div className="py-12 border-t border-gray-200 dark:border-gray-800">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                 <div className="text-center mb-10">
+                    <h2 className="font-space-grotesk text-3xl font-bold dark:text-white mb-3">Our Esteemed Partners</h2>
+                    <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                        We are proud to collaborate with industry leaders to foster innovation and provide opportunities for our members.
+                    </p>
+                 </div>
                  <div className="w-full inline-block overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
                       <motion.div
                           className="flex items-center"
