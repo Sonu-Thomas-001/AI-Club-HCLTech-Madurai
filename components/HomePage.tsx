@@ -1,5 +1,5 @@
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Button } from './Button';
 import { Card } from './Card';
 import { Link } from './Link';
@@ -11,13 +11,8 @@ import { ScrollingTestimonials } from './ScrollingTestimonials';
 import { HeroBackground } from './HeroBackground';
 import { Typewriter } from './Typewriter';
 import { motion, useScroll, useTransform } from 'framer-motion';
-
-const teamMembers = [
-    { name: 'Aravind Kumar', role: 'Club Lead', imageUrl: 'https://placehold.co/128x128/e0e0e0/333333?text=AK', linkedinUrl: '#' },
-    { name: 'Priya Rajesh', role: 'Research Head', imageUrl: 'https://placehold.co/128x128/e0e0e0/333333?text=PR', linkedinUrl: '#' },
-    { name: 'Karthik R', role: 'Technical Coordinator', imageUrl: 'https://placehold.co/128x128/e0e0e0/333333?text=KR', linkedinUrl: '#' },
-    { name: 'Nivetha M', role: 'Creative Lead', imageUrl: 'https://placehold.co/128x128/e0e0e0/333333?text=NM', linkedinUrl: '#' },
-];
+// @ts-ignore
+import Papa from 'papaparse';
 
 const focusAreas = [
     { name: 'Artificial Intelligence', icon: <BrainCircuit className="w-full h-full" />, description: 'Exploring neural networks, deep learning, and generative models to build intelligent systems.', span: 'md:col-span-2 md:row-span-2' },
@@ -101,7 +96,47 @@ const BentoCard: React.FC<{ area: typeof focusAreas[0]; index: number }> = ({ ar
   );
 }
 
+interface CoreMember {
+    name: string;
+    role: string;
+    imageUrl: string;
+    linkedinUrl: string;
+}
+
 export const HomePage: React.FC = () => {
+  const [coreTeam, setCoreTeam] = useState<CoreMember[]>([]);
+
+  useEffect(() => {
+    const fetchCoreTeam = async () => {
+      try {
+        const response = await fetch('/core_team.csv', { cache: 'no-cache' });
+        if (!response.ok) throw new Error('Failed to fetch core team data');
+        
+        const csvText = await response.text();
+        Papa.parse(csvText, {
+          header: true,
+          skipEmptyLines: true,
+          complete: (results: { data: any[] }) => {
+            const members = results.data.map((row: any) => ({
+              name: row.Name,
+              role: row.Role,
+              imageUrl: row.ImageUrl,
+              linkedinUrl: row.LinkedinUrl
+            }));
+            setCoreTeam(members);
+          },
+          error: (err: any) => {
+             console.error("Error parsing core team CSV:", err);
+          }
+        });
+      } catch (error) {
+        console.error("Error loading core team:", error);
+      }
+    };
+
+    fetchCoreTeam();
+  }, []);
+
   return (
     <div className="overflow-hidden">
         {/* Immersive Hero Section */}
@@ -307,7 +342,12 @@ export const HomePage: React.FC = () => {
                   <p className="text-gray-500 mt-4">The minds orchestrating the movement.</p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                  {teamMembers.map(member => <TeamMemberCard key={member.name} member={member} />)}
+                  {coreTeam.map(member => <TeamMemberCard key={member.name} member={member} />)}
+                  {coreTeam.length === 0 && (
+                    <div className="col-span-full text-center text-gray-500">
+                       <p>Loading core team...</p>
+                    </div>
+                  )}
               </div>
            </AnimatedSection>
         </div>

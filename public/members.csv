@@ -1,0 +1,9 @@
+id,name,role,dept,skills,imageUrl
+1,Aravind Kumar,Club Lead,Digital Engineering,Python;TensorFlow;Cloud,https://placehold.co/400x400/e0e0e0/333333?text=AK
+2,Priya Rajesh,Research Head,Data Science,GenAI;Ethics;NLP,https://placehold.co/400x400/e0e0e0/333333?text=PR
+3,Karthik R,Tech Lead,Software,PyTorch;React;DevOps,https://placehold.co/400x400/e0e0e0/333333?text=KR
+4,Nivetha M,Creative Lead,Design,UI/UX;Figma;GenAI,https://placehold.co/400x400/e0e0e0/333333?text=NM
+5,Suresh P,Events Lead,Management,Scrum;Cloud;AI,https://placehold.co/400x400/e0e0e0/333333?text=SP
+6,Anitha J,Community Mgr,HR Tech,Python;Community;Ops,https://placehold.co/400x400/e0e0e0/333333?text=AJ
+7,Rahul V,ML Engineer,R&D,Keras;OpenCV;C++,https://placehold.co/400x400/e0e0e0/333333?text=RV
+8,Sneha K,Frontend Dev,Apps,React;Tailwind;Three.js,https://placehold.co/400x400/e0e0e0/333333?text=SK

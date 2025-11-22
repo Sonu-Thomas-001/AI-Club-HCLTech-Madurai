@@ -1,23 +1,22 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { PageHeader } from '../components/PageHeader';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, LinkedIn, GitHub, Mail, Code, Cpu, Cloud } from '../components/Icons';
+import { Search, LinkedIn, GitHub, Mail } from '../components/Icons';
+// @ts-ignore
+import Papa from 'papaparse';
 
-// Extended Mock Data
-const members = [
-  { id: 1, name: 'Aravind Kumar', role: 'Club Lead', dept: 'Digital Engineering', skills: ['Python', 'TensorFlow', 'Cloud'], imageUrl: 'https://placehold.co/400x400/e0e0e0/333333?text=AK' },
-  { id: 2, name: 'Priya Rajesh', role: 'Research Head', dept: 'Data Science', skills: ['GenAI', 'Ethics', 'NLP'], imageUrl: 'https://placehold.co/400x400/e0e0e0/333333?text=PR' },
-  { id: 3, name: 'Karthik R', role: 'Tech Lead', dept: 'Software', skills: ['PyTorch', 'React', 'DevOps'], imageUrl: 'https://placehold.co/400x400/e0e0e0/333333?text=KR' },
-  { id: 4, name: 'Nivetha M', role: 'Creative Lead', dept: 'Design', skills: ['UI/UX', 'Figma', 'GenAI'], imageUrl: 'https://placehold.co/400x400/e0e0e0/333333?text=NM' },
-  { id: 5, name: 'Suresh P', role: 'Events Lead', dept: 'Management', skills: ['Scrum', 'Cloud', 'AI'], imageUrl: 'https://placehold.co/400x400/e0e0e0/333333?text=SP' },
-  { id: 6, name: 'Anitha J', role: 'Community Mgr', dept: 'HR Tech', skills: ['Python', 'Community', 'Ops'], imageUrl: 'https://placehold.co/400x400/e0e0e0/333333?text=AJ' },
-  { id: 7, name: 'Rahul V', role: 'ML Engineer', dept: 'R&D', skills: ['Keras', 'OpenCV', 'C++'], imageUrl: 'https://placehold.co/400x400/e0e0e0/333333?text=RV' },
-  { id: 8, name: 'Sneha K', role: 'Frontend Dev', dept: 'Apps', skills: ['React', 'Tailwind', 'Three.js'], imageUrl: 'https://placehold.co/400x400/e0e0e0/333333?text=SK' },
-];
+interface Member {
+  id: string;
+  name: string;
+  role: string;
+  dept: string;
+  skills: string[];
+  imageUrl: string;
+}
 
 interface MemberCardProps {
-    member: typeof members[0];
+    member: Member;
     index: number;
 }
 
@@ -129,7 +128,46 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, index }) => {
 };
 
 export const MembersPage: React.FC = () => {
+    const [members, setMembers] = useState<Member[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchMembers = async () => {
+            try {
+                const response = await fetch('/members.csv', { cache: 'no-cache' });
+                if (!response.ok) throw new Error('Failed to fetch members data');
+
+                const csvText = await response.text();
+                Papa.parse(csvText, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: (results: { data: any[] }) => {
+                        const parsedMembers = results.data.map((row: any) => ({
+                            id: row.id,
+                            name: row.name,
+                            role: row.role,
+                            dept: row.dept,
+                            // Assume skills are semicolon separated in CSV
+                            skills: row.skills ? row.skills.split(';').map((s: string) => s.trim()) : [],
+                            imageUrl: row.imageUrl
+                        }));
+                        setMembers(parsedMembers);
+                        setLoading(false);
+                    },
+                    error: (err: any) => {
+                        console.error("Error parsing members CSV:", err);
+                        setLoading(false);
+                    }
+                });
+            } catch (error) {
+                console.error("Error loading members:", error);
+                setLoading(false);
+            }
+        };
+
+        fetchMembers();
+    }, []);
     
     const filteredMembers = members.filter(member => 
         member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -162,24 +200,30 @@ export const MembersPage: React.FC = () => {
                             />
                             <div className="hidden sm:flex items-center gap-2 ml-4">
                                 <div className="w-px h-6 bg-gray-300 dark:bg-gray-700"></div>
-                                <span className="text-xs font-mono text-gray-400 px-2">{filteredMembers.length} FOUND</span>
+                                <span className="text-xs font-mono text-gray-400 px-2">{loading ? '...' : filteredMembers.length} FOUND</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Members Grid */}
-                    <motion.div 
-                        layout
-                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
-                    >
-                        <AnimatePresence>
-                            {filteredMembers.map((member, index) => (
-                                <MemberCard key={member.id} member={member} index={index} />
-                            ))}
-                        </AnimatePresence>
-                    </motion.div>
+                    {loading ? (
+                         <div className="flex justify-center py-20">
+                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-hcl-blue"></div>
+                        </div>
+                    ) : (
+                        /* Members Grid */
+                        <motion.div 
+                            layout
+                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+                        >
+                            <AnimatePresence>
+                                {filteredMembers.map((member, index) => (
+                                    <MemberCard key={member.id} member={member} index={index} />
+                                ))}
+                            </AnimatePresence>
+                        </motion.div>
+                    )}
 
-                    {filteredMembers.length === 0 && (
+                    {!loading && filteredMembers.length === 0 && (
                         <motion.div 
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                             className="text-center py-20"

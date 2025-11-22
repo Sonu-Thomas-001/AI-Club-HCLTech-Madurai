@@ -1,0 +1,4 @@
+id,authorName,authorAvatar,timestamp,content,likes,commentsCount,commentsData
+1,Aravind Kumar,https://placehold.co/128x128/e0e0e0/333333?text=AK,2 hours ago,"Excited to announce our next big event: The Generative AI Bootcamp! We will be covering everything from the basics of GANs to advanced diffusion models. Who is excited?",15,4,"[]"
+2,Priya Rajesh,https://placehold.co/128x128/e0e0e0/333333?text=PR,1 day ago,"Has anyone experimented with the new multimodal features in the Gemini API? I am working on a project that combines image and text inputs and would love to exchange ideas.",22,8,"[]"
+3,Karthik R,https://placehold.co/128x128/e0e0e0/333333?text=KR,3 days ago,"Just pushed a new update to the NeuroLens project on our GitHub. We have improved the summarization accuracy by 12%. Check it out and let us know your feedback!",31,12,"[]"
