@@ -17,6 +17,7 @@ import { FAQPage } from './pages/FAQPage';
 import { CommunityPage } from './pages/CommunityPage';
 import { PartnerPage } from './pages/PartnerPage';
 import { LeaderboardPage } from './pages/LeaderboardPage';
+import { CalendarPage } from './pages/CalendarPage';
 import { BackToTopButton } from './components/BackToTopButton';
 import { ChatbotIcon } from './components/ChatbotIcon';
 import { AIAssistant } from './components/AIAssistant';
@@ -42,6 +43,7 @@ const routes: { [key: string]: React.ComponentType } = {
   '/faq': FAQPage,
   '/partner': PartnerPage,
   '/leaderboard': LeaderboardPage,
+  '/calendar': CalendarPage,
 };
 
 const App: React.FC = () => {

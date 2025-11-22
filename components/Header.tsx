@@ -46,6 +46,7 @@ export const Header: React.FC = () => {
       children: [
         { name: 'Gallery', path: '/gallery' },
         { name: 'Community', path: '/community' },
+        { name: 'Our Calendar', path: '/calendar' },
         { name: 'News', path: '/news' },
         { name: 'Leaderboard', path: '/leaderboard' },
         { name: 'Partner With Us', path: '/partner' },
